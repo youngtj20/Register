@@ -102,16 +102,26 @@ button:disabled { cursor: not-allowed; opacity: .58; }
 .qr-frame span:nth-child(3) { bottom: -12px; left: -12px; border-bottom: 5px solid; border-left: 5px solid; border-radius: 0 0 0 12px; }
 .qr-frame span:nth-child(4) { bottom: -12px; right: -12px; border-bottom: 5px solid; border-right: 5px solid; border-radius: 0 0 12px; }
 
+#print-root { display: none; }
+
+/*
+ * Print isolation via portal, not visibility:hidden. The previous approach
+ * hid the rest of the page with `visibility: hidden`, but hidden elements
+ * still occupy layout height — the fully-laid-out (invisible) dashboard
+ * behind a print modal was often taller than one A4 sheet, so the browser
+ * silently appended a trailing blank page to fit that invisible height.
+ * Printable content is now rendered into #print-root (a sibling of #root,
+ * see PrintPortal.tsx) which is the ONLY thing left visible during print —
+ * #root is set to display:none, which truly removes it from layout.
+ */
 @media print {
-  body * { visibility: hidden; }
-  .qr-poster-print, .qr-poster-print *, .print-a4, .print-a4 * { visibility: visible; }
-  .qr-poster-print { position: fixed; inset: 0; margin: auto; box-shadow: none !important; border: none !important; }
-  .print-a4 { position: absolute; inset: 0 0 auto 0; margin: 0; box-shadow: none !important; border: none !important; }
+  #root { display: none !important; }
+  #print-root { display: block !important; }
+  .qr-poster-print, .print-a4 { box-shadow: none !important; border: none !important; }
   .print-a4, .print-a4 * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .print-a4 thead { display: table-header-group; }
   .print-a4 tr { break-inside: avoid; }
   .print-watermark { position: fixed !important; }
-  .no-print { display: none !important; }
   @page { size: A4; margin: 14mm 12mm; }
 }
 } /* end @layer components */
