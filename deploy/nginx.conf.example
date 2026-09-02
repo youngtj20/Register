@@ -1,0 +1,39 @@
+# Nginx site config for Transporters for Tinubu/Shettima 2027 check-in app.
+#
+# Install:
+#   sudo cp deploy/nginx.conf.example /etc/nginx/sites-available/checkin
+#   sudo ln -s /etc/nginx/sites-available/checkin /etc/nginx/sites-enabled/checkin
+#   sudo nginx -t && sudo systemctl reload nginx
+#   sudo certbot --nginx -d your-domain.com   # adds HTTPS + auto-redirect
+#
+# Replace `your-domain.com` and the app root path below before use.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name your-domain.com;
+
+    root /var/www/checkin/dist;
+    index index.html;
+
+    # Static assets — long cache since Vite fingerprints filenames
+    location /assets/ {
+        try_files $uri =404;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    # API — reverse proxy to the Node process (PM2-managed, bound to 127.0.0.1)
+    location /api/ {
+        proxy_pass http://127.0.0.1:8787;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # SPA fallback — client-side routes (/login, /dashboard, /self/:code, etc.)
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
