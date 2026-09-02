@@ -27,6 +27,7 @@ export interface Attendee {
   registration_code: string;
   full_name: string;
   phone: string;
+  email: string | null;
   organisation: string | null;
   checked_in: boolean;
   checked_in_at: string | null;

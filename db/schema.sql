@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `attendees` (
   `registration_code` VARCHAR(40) NOT NULL UNIQUE,
   `full_name` VARCHAR(255) NOT NULL,
   `phone` VARCHAR(40) NOT NULL,
+  `email` VARCHAR(255) NULL,
   `organisation` VARCHAR(255) NULL,
   `checked_in` TINYINT(1) NOT NULL DEFAULT 0,
   `checked_in_at` DATETIME NULL,

@@ -1,6 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
+/*
+ * Everything below is wrapped in @layer components so Tailwind utility
+ * classes (e.g. `sm:w-40`, `h-11`) always win when combined with these
+ * classes on the same element. Unlayered CSS beats ALL layered CSS
+ * (including Tailwind's utilities layer) regardless of specificity or
+ * source order per the CSS Cascade Layers spec — leaving these rules
+ * unlayered silently broke every `className="input sm:w-40"`-style
+ * override in the app.
+ */
+@layer components {
 :root { font-family: 'DM Sans', sans-serif; color: #17201d; background: #f2f5f3; font-synthesis: none; }
 button, a, input, select { -webkit-tap-highlight-color: transparent; }
 button, select { cursor: pointer; }
@@ -48,6 +58,18 @@ button:disabled { cursor: not-allowed; opacity: .58; }
 .status-present { background: #eaf7f1; color: #087f5b; }
 .status-pending { background: #fff4e6; color: #a76019; }
 .status-neutral, .method-pill { background: #eef2f0; color: #65716c; }
+.filter-pill { display: inline-flex; align-items: center; gap: .45rem; border: 1px solid #dfe6e2; border-radius: 999px; background: #fff; padding: .5rem .9rem; font-size: .76rem; font-weight: 700; color: #4d5854; transition: .18s; }
+.filter-pill:hover { border-color: #b8cac1; background: #f6faf8; }
+.filter-pill-active { border-color: #087f5b; background: #087f5b; color: #fff; box-shadow: 0 5px 13px rgba(8,127,91,.18); }
+.filter-pill span { display: inline-flex; align-items: center; justify-content: center; min-width: 1.3rem; height: 1.3rem; padding: 0 .32rem; border-radius: 999px; background: rgba(8,127,91,.1); font-size: .64rem; color: #087f5b; }
+.filter-pill-active span { background: rgba(255,255,255,.24); color: #fff; }
+.stat-chip { display: inline-flex; align-items: center; gap: .5rem; border-radius: 12px; background: #f5f8f6; padding: .55rem .9rem; font-size: .76rem; font-weight: 700; color: #4d5854; }
+.stat-chip-green { background: #eaf7f1; color: #087f5b; }
+.stat-chip-gold { background: #fff5e8; color: #b56a1b; }
+.stat-chip-blue { background: #eaf3fb; color: #377baa; }
+.role-badge { display: inline-flex; align-items: center; border-radius: 999px; padding: .22rem .58rem; font-size: .6rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+.role-badge-admin { background: #f3eefb; color: #7449b3; }
+.role-badge-staff { background: #eaf3fb; color: #377baa; }
 .live-pill { display: inline-flex; width: fit-content; align-items: center; gap: .5rem; border: 1px solid #d7e9e1; border-radius: 999px; background: #f3fbf7; padding: .45rem .7rem; color: #087f5b; font-size: .68rem; font-weight: 750; }
 .live-pill span { height: .42rem; width: .42rem; border-radius: 50%; background: #19a974; box-shadow: 0 0 0 3px rgba(25,169,116,.13); }
 .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem; padding: 3.5rem 1.25rem; color: #8a9690; text-align: center; font-size: .8rem; }
@@ -88,6 +110,8 @@ button:disabled { cursor: not-allowed; opacity: .58; }
   .print-a4, .print-a4 * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .print-a4 thead { display: table-header-group; }
   .print-a4 tr { break-inside: avoid; }
+  .print-watermark { position: fixed !important; }
   .no-print { display: none !important; }
   @page { size: A4; margin: 14mm 12mm; }
 }
+} /* end @layer components */

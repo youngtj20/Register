@@ -7,6 +7,7 @@ module.exports = {
       script: 'api/server.js',
       cwd: __dirname,
       node_args: '--env-file=.env',
+      exec_mode: 'fork',
       instances: 1,
       autorestart: true,
       max_memory_restart: '300M',

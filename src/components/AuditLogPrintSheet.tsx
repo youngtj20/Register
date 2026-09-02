@@ -4,7 +4,9 @@ import type { Checkin, EventRecord } from '../types';
 export default function AuditLogPrintSheet({ event, records, filterLabel }: { event: EventRecord; records: Checkin[]; filterLabel: string }) {
   const generatedAt = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date());
 
-  return <div className="print-a4 bg-white text-[#17201d]">
+  return <div className="print-a4 relative overflow-hidden bg-white text-[#17201d]">
+    <img src="/transporter.png" alt="" aria-hidden="true" className="print-watermark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[60%] w-[60%] -translate-x-1/2 -translate-y-1/2 object-contain opacity-[0.06] grayscale" />
+    <div className="relative z-10">
     <div className="flex items-center justify-between gap-4 border-b-2 border-[#087f5b] pb-4">
       <div className="flex items-center gap-3">
         <img src="/transporter.png" alt="" className="h-14 w-14 shrink-0 rounded-full" />
@@ -44,5 +46,6 @@ export default function AuditLogPrintSheet({ event, records, filterLabel }: { ev
       </tbody>
     </table>
     <div className="mt-6 text-center text-[10px] text-[#a7b0ab]">Transporters for Tinubu/Shettima 2027 · Wheels of progress: moving Nigeria forward</div>
+    </div>
   </div>;
 }

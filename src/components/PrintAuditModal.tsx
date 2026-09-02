@@ -6,22 +6,26 @@ import type { Checkin, CheckinsPage, EventRecord } from '../types';
 
 type Scope = '30' | '50' | '100' | '200' | 'all';
 
-export default function PrintAuditModal({ event, query, total, api, onClose, onMarked }: {
+export default function PrintAuditModal({ event, query, total, api, selectedRecords, onClose, onMarked }: {
   event: EventRecord;
   query: string;
   total: number;
   api: (url: string, options?: RequestInit) => Promise<CheckinsPage>;
+  selectedRecords?: Checkin[];
   onClose: () => void;
   onMarked: () => void;
 }) {
+  const isSelectionMode = Boolean(selectedRecords && selectedRecords.length);
   const [scope, setScope] = useState<Scope>('30');
   const [markPrinted, setMarkPrinted] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [records, setRecords] = useState<Checkin[] | null>(null);
+  const [records, setRecords] = useState<Checkin[] | null>(isSelectionMode ? selectedRecords! : null);
 
   const countFor = (value: Scope) => value === 'all' ? Math.max(total, 1) : Number(value);
-  const filterLabel = query ? `Filtered by "${query}"` : 'All checked-in participants';
+  const filterLabel = isSelectionMode
+    ? `${selectedRecords!.length} manually selected record${selectedRecords!.length === 1 ? '' : 's'}`
+    : query ? `Filtered by "${query}"` : 'All checked-in participants';
 
   const generate = async () => {
     setBusy(true); setError('');
@@ -69,7 +73,7 @@ export default function PrintAuditModal({ event, query, total, api, onClose, onM
       {records && <div className="mt-5 print:mt-0">
         <div className="no-print mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-[#f5f8f6] px-4 py-3 text-sm">
           <span>{records.length} record{records.length === 1 ? '' : 's'} ready to print{markPrinted ? ' · will be marked as printed' : ''}</span>
-          <div className="flex gap-2"><button className="btn-secondary" onClick={() => setRecords(null)}>Back</button><button className="btn-primary" disabled={busy} onClick={doPrint}>{busy ? <span className="loader-sm" /> : <Printer size={16} />} Print now</button></div>
+          <div className="flex gap-2">{!isSelectionMode && <button className="btn-secondary" onClick={() => setRecords(null)}>Back</button>}<button className="btn-primary" disabled={busy} onClick={doPrint}>{busy ? <span className="loader-sm" /> : <Printer size={16} />} Print now</button></div>
         </div>
         {error && <div className="error-box no-print mb-3">{error}</div>}
         <AuditLogPrintSheet event={event} records={records} filterLabel={filterLabel} />
