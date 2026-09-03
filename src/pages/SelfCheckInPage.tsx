@@ -73,13 +73,13 @@ export default function SelfCheckInPage() {
   return <main className="min-h-screen bg-[#f1f6f3]">
     <header className="border-b border-[#e1e9e4] bg-white/85 backdrop-blur-xl"><div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5 sm:px-5 sm:py-4"><Logo /><span className="hidden rounded-full bg-[#ecf8f2] px-3 py-1.5 text-xs font-bold text-[#087f5b] sm:inline-flex"><span className="mr-2 mt-1 h-1.5 w-1.5 rounded-full bg-[#19a974]" /> Self check-in open</span></div></header>
     <div className="mx-auto max-w-5xl px-4 py-6 sm:px-5 sm:py-12">
-      <section className="relative overflow-hidden rounded-[22px] bg-gradient-to-br from-[#0b5b46] to-[#052c22] p-5 text-white shadow-[0_20px_60px_rgba(6,61,46,.22)] sm:rounded-[28px] sm:p-9">
+      {!checkedIn && <section className="relative overflow-hidden rounded-[22px] bg-gradient-to-br from-[#0b5b46] to-[#052c22] p-5 text-white shadow-[0_20px_60px_rgba(6,61,46,.22)] sm:rounded-[28px] sm:p-9">
         <div className="absolute -right-14 -top-20 h-60 w-60 rounded-full border border-white/10" /><div className="absolute right-8 top-5 h-32 w-32 rounded-full border border-white/10" /><div className="absolute -bottom-16 -left-10 h-40 w-40 rounded-full border border-white/[0.06]" />
         <span className="relative text-[11px] font-bold uppercase tracking-[.18em] text-emerald-200/80 sm:text-xs">You're invited</span>
         <h1 className="relative mt-2.5 max-w-2xl font-display text-2xl font-semibold leading-tight tracking-[-.03em] sm:mt-3 sm:text-4xl">{event.name}</h1>
         <div className="relative mt-4 flex flex-col gap-2 text-xs text-emerald-50/70 sm:mt-6 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3 sm:text-sm"><span className="flex items-center gap-2"><CalendarDays size={15} /> {formatEventDateTime(event.starts_at)}</span><span className="flex items-center gap-2"><MapPin size={15} /> {event.venue}</span></div>
-      </section>
-      <AnimatePresence mode="wait">{checkedIn ? <motion.section key="success" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mx-auto mt-6 max-w-xl overflow-hidden rounded-[26px] bg-white shadow-[0_20px_60px_rgba(6,61,46,.12)] sm:mt-8">
+      </section>}
+      <AnimatePresence mode="wait">{checkedIn ? <motion.section key="success" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mx-auto mt-0 max-w-xl overflow-hidden rounded-[26px] bg-white shadow-[0_20px_60px_rgba(6,61,46,.12)] sm:mt-0">
         <div className="relative overflow-hidden bg-gradient-to-br from-[#0b5b46] to-[#052c22] px-6 py-9 text-center text-white sm:px-10 sm:py-12">
           <div className="absolute -right-14 -top-16 h-44 w-44 rounded-full border border-white/10" /><div className="absolute -bottom-14 -left-10 h-32 w-32 rounded-full border border-white/[0.06]" />
           <motion.span initial={{ scale: .5, rotate: -8 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 260, damping: 18 }} className="relative mx-auto grid h-16 w-16 place-items-center rounded-full bg-white text-[#07805b] shadow-lg sm:h-20 sm:w-20"><CheckCircle2 size={36} strokeWidth={2} /></motion.span>
