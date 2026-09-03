@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const auth = await getStaff(req);
       if (auth.error) return res.status(auth.status).json({ error: auth.error });
-      const { eventId, q = '' } = req.query || {};
+      const { eventId, q = '', printed = 'all' } = req.query || {};
       if (!eventId) return res.status(400).json({ error: 'Event is required' });
 
       const page = Math.max(1, parseInt(req.query?.page, 10) || 1);
@@ -21,15 +21,16 @@ export default async function handler(req, res) {
       const like = `%${term}%`;
       const searchClause = term ? 'AND (a.full_name LIKE ? OR a.phone LIKE ? OR a.organisation LIKE ? OR a.registration_code LIKE ?)' : '';
       const searchParams = term ? [like, like, like, like] : [];
+      const printedClause = printed === 'unprinted' ? 'AND c.printed_at IS NULL' : printed === 'printed' ? 'AND c.printed_at IS NOT NULL' : '';
 
       const [{ total }] = await query(
-        `SELECT COUNT(*) AS total FROM checkins c JOIN attendees a ON a.id = c.attendee_id WHERE c.event_id = ? ${searchClause}`,
+        `SELECT COUNT(*) AS total FROM checkins c JOIN attendees a ON a.id = c.attendee_id WHERE c.event_id = ? ${searchClause} ${printedClause}`,
         [eventId, ...searchParams]
       );
       const rows = await query(
         `SELECT c.*, a.full_name, a.phone, a.organisation, a.registration_code
          FROM checkins c JOIN attendees a ON a.id = c.attendee_id
-         WHERE c.event_id = ? ${searchClause}
+         WHERE c.event_id = ? ${searchClause} ${printedClause}
          ORDER BY c.checked_in_at DESC
          LIMIT ? OFFSET ?`,
         [eventId, ...searchParams, pageSize, offset]
